@@ -17,17 +17,17 @@ steps:
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
-- task: TerraformCLI@0
+- task: DownloadSecureFile@1
+  name: publicKey
   inputs:
-    command: 'init'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/azure-terraform/kuebernetes'
-    backendType: 'azurerm'
+    secureFile: azure_rsa.pub
+    retryCount: 5
+
 - task: TerraformCLI@0
   inputs:
     command: 'validate'
     workingDirectory: '$(System.DefaultWorkingDirectory)/Azure-terraform/Kubernetes'
     commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(public.secureFilePath)'
-    allowTelemetryCollection: true
     backendServiceArm: 'Azure-resource-afor225fv'
     ensureBackend: true
     backendAzureRmResourceGroupName: 'terraform-backend-fv'
@@ -36,3 +36,10 @@ steps:
     backendAzureRmContainerName: 'storageacctaforo255fvcontainer'
     backendAzureRmKey: 'kubernetes-dev.tfstate'
     allowTelemetryCollection: true
+
+- task: TerraformCli@0
+  inputs:
+   command: 'apply'
+   workingDirectory: '$(System.DefaultWorkingDirectory)/Azure-terraform/Kubernetes'
+   environmentServiceName:
+
