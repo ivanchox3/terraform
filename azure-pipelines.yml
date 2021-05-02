@@ -1,0 +1,45 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+- task: DownloadSecureFile@1
+  name: publicKey
+  inputs:
+    secureFile: azure_rsa.pub
+    retryCount: 5
+
+- task: TerraformCLI@0
+  inputs:
+    command: 'validate'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/Azure-terraform/Kubernetes'
+    commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(public.secureFilePath)'
+    backendServiceArm: 'Azure-resource-afor225fv'
+    ensureBackend: true
+    backendAzureRmResourceGroupName: 'terraform-backend-fv'
+    backendAzureRmResourceGroupLocation: 'westeurope'
+    backendAzureRmStorageAccountName: 'storageacctaforo255fv'
+    backendAzureRmContainerName: 'storageacctaforo255fvcontainer'
+    backendAzureRmKey: 'kubernetes-dev.tfstate'
+    allowTelemetryCollection: true
+
+- task: TerraformCli@0
+  inputs:
+   command: 'apply'
+   workingDirectory: '$(System.DefaultWorkingDirectory)/Azure-terraform/Kubernetes'
+   environmentServiceName:
+
