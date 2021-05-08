@@ -17,13 +17,13 @@ variable node_count {
 
 
 variable dns_prefix {
-  default = "k8sKubernetest"
+  default = "k8sKuberneIMA"
 }
 
 variable cluster_name {
-  default = "k8skubernettest"
+  default = "k8skubernetIMA"
 }
 
 variable resource_group {
-  default = "kubernet255"
+  default = "kubernet255IMA"
 }
